@@ -34,7 +34,7 @@ public struct DecimalField<T: StringProtocol>: View {
             })
             .disabled(viewModel.fieldState != .acceptable)
             Button(action: {cancelInput()}, label: {
-                Image(systemName: "x.circle")
+                Image(systemName: "arrow.counterclockwise")
             })
         }
     }
