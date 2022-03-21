@@ -1,3 +1,5 @@
 # SDSCustomField
 
-A description of this package.
+Custom Field collection for SwiftUI
+
+- DecimalField
