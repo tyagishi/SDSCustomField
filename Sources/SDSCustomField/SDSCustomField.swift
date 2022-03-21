@@ -1,6 +1,0 @@
-public struct SDSCustomField {
-    public private(set) var text = "Hello, World!"
-
-    public init() {
-    }
-}
