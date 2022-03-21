@@ -60,6 +60,17 @@ class DecimalFieldViewModel: ObservableObject {
         }
     }
     
+    public func updateDecimalFromOutside(_ decimal: Decimal) {
+        let nf = NumberFormatter()
+        nf.numberStyle = .currency
+        let str = nf.string(from: decimal as NSDecimalNumber)!
+
+        self.stringSharedWithUpperView = str
+        self.decimalValue = decimal
+        self.fieldString = str
+        self.fieldState = .accepted
+    }
+    
     public func updateFieldString(_ str: String) {
         self.fieldString = str
         updateFieldState()

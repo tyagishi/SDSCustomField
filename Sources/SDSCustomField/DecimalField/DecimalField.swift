@@ -38,6 +38,9 @@ public struct DecimalField<T: StringProtocol>: View {
                 Image(systemName: "arrow.counterclockwise")
             })
         }
+        .onChange(of: decimalValue, perform: { newValue in
+            viewModel.updateDecimalFromOutside(newValue)
+        })
     }
     
     func apply() {
