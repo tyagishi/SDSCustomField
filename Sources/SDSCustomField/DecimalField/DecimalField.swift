@@ -25,6 +25,7 @@ public struct DecimalField<T: StringProtocol>: View {
             }, set: { newValue in
                 viewModel.updateFieldString(newValue)
             }))
+            .multilineTextAlignment(.trailing)
             .focused($fieldFocus)
             .onSubmit { apply() }
             .background(viewModel.fieldBackgroundColor)
