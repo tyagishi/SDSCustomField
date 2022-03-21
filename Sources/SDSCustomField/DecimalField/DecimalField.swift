@@ -11,6 +11,8 @@ public struct DecimalField<T: StringProtocol>: View {
     let title: T
     @Binding var decimalValue: Decimal
     @StateObject var viewModel: DecimalFieldViewModel
+    @FocusState private var fieldFocus:Bool
+
     public init(_ title: T, value: Binding<Decimal>) {
         self.title = title
         self._decimalValue = value
@@ -23,12 +25,14 @@ public struct DecimalField<T: StringProtocol>: View {
             }, set: { newValue in
                 viewModel.updateFieldString(newValue)
             }))
+            .focused($fieldFocus)
             .onSubmit { apply() }
             .background(viewModel.fieldBackgroundColor)
             .textFieldStyle(.plain)
             Button(action: {apply()}, label: {
                 Image(systemName: "arrow.turn.down.left")
             })
+            .disabled(viewModel.fieldState != .acceptable)
             Button(action: {cancelInput()}, label: {
                 Image(systemName: "x.circle")
             })
@@ -43,6 +47,7 @@ public struct DecimalField<T: StringProtocol>: View {
     
     func cancelInput() {
         viewModel.cancel()
+        fieldFocus = false
     }
 }
 
