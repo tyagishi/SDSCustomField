@@ -16,7 +16,7 @@ class DecimalFieldViewModel: ObservableObject {
 
     let invalidValueBackground = Color.red.opacity(0.4)
     let acceptableValueBackground = Color.blue.opacity(0.4)
-    let acceptedValueBackground = Color.white
+    let acceptedValueBackground = Color.clear// Color.white
 
     enum FieldState {
         case invalid, acceptable, accepted
