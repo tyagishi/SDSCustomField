@@ -18,7 +18,6 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
     let completionTokens:[TokenObject]
     var avoidDuplicate:Bool
     let acceptOnlyCompletion:Bool
-    var didChange: SDSTokenFieldDidChange?
     
     public init(tokens: Binding<[TokenObject]>,
                 completionTokens:[TokenObject] = [],
