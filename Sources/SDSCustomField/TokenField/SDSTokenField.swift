@@ -110,6 +110,7 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
             guard let tokenField = obj.object as? NSTokenField else { return }
 
             if let strTokens = tokenField.objectValue as? [String] {
+                self.parent.logger.debug("processed as String")
                 var newToken: [TokenObject] = []
                 for token in strTokens {
                     if let index = parent.completionTokens.firstIndex(where: {$0.displayString == token.displayString}) {
@@ -118,20 +119,26 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
                 }
                 if !parent.tokens.elementsEqual(newToken) {
                     parent.tokens = newToken
+                } else {
+                    self.parent.logger.debug("processed as TokenObject")
                 }
                 return
             }
-            if let tokens = tokenField.objectValue as? [TokenObject] {
+            if let newTokensFromField = tokenField.objectValue as? [TokenObject] {
+                self.parent.logger.debug("processed as TokenObject")
                 var newToken: [TokenObject] = []
-                for token in tokens {
+                for token in newTokensFromField {
                     if let index = parent.completionTokens.firstIndex(where: {$0.displayString == token.displayString}) {
                         newToken.append(parent.completionTokens[index])
                     }
                 }
-                if !parent.tokens.elementsEqual(newToken) {
+                if !parent.tokens.elementsEqual(newToken, by: {$0.displayString == $1.displayString}) {
+                    self.parent.logger.debug("change from:\(self.parent.tokens.compactMap({$0.displayString}).joined(separator: ",")) to:\(newTokensFromField.compactMap({$0.displayString}).joined(separator: ","))")
                     parent.tokens = newToken
+                } else {
+                    self.parent.logger.debug("ignore unnecessary change")
                 }
-                return 
+                return
             }
             self.parent.logger.critical("unknown type passed to controlTextDidEndEditing")
             return
