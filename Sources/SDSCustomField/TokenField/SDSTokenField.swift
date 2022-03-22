@@ -9,7 +9,7 @@ import os
 import SwiftUI
 
 public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRepresentable {
-    var logger = Logger.init(subsystem: "com.smalldesksoftware.sdstokenfield", category: "tokenfield")
+    var logger = Logger.init(subsystem: "com.smalldesksoftware.SDSTokenField", category: "SDSTokenField")
     var tokenStyle: NSTokenField.TokenStyle
     var tokenizingCharacterSet: CharacterSet
 
@@ -108,16 +108,33 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
         
         public func controlTextDidEndEditing(_ obj: Notification) {
             guard let tokenField = obj.object as? NSTokenField else { return }
-            guard let tokens = tokenField.objectValue as? [String] else {
-                self.parent.logger.critical("unknown type passed to controlTextDidEndEditing")
+
+            if let strTokens = tokenField.objectValue as? [String] {
+                var newToken: [TokenObject] = []
+                for token in strTokens {
+                    if let index = parent.completionTokens.firstIndex(where: {$0.displayString == token.displayString}) {
+                        newToken.append(parent.completionTokens[index])
+                    }
+                }
+                if !parent.tokens.elementsEqual(newToken) {
+                    parent.tokens = newToken
+                }
                 return
             }
-            parent.tokens = []
-            for token in tokens {
-                if let index = parent.completionTokens.firstIndex(where: {$0.displayString == token}) {
-                    parent.tokens.append(parent.completionTokens[index])
+            if let tokens = tokenField.objectValue as? [TokenObject] {
+                var newToken: [TokenObject] = []
+                for token in tokens {
+                    if let index = parent.completionTokens.firstIndex(where: {$0.displayString == token.displayString}) {
+                        newToken.append(parent.completionTokens[index])
+                    }
                 }
+                if !parent.tokens.elementsEqual(newToken) {
+                    parent.tokens = newToken
+                }
+                return 
             }
+            self.parent.logger.critical("unknown type passed to controlTextDidEndEditing")
+            return
         }
         
     }
