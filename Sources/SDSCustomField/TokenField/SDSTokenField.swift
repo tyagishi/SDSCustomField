@@ -132,8 +132,8 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
                         newToken.append(parent.completionTokens[index])
                     }
                 }
+                self.parent.logger.debug("change from:\(self.parent.tokens.compactMap({$0.displayString}).joined(separator: ",")) to:\(newTokensFromField.compactMap({$0.displayString}).joined(separator: ","))")
                 if !parent.tokens.elementsEqual(newToken, by: {$0.displayString == $1.displayString}) {
-                    self.parent.logger.debug("change from:\(self.parent.tokens.compactMap({$0.displayString}).joined(separator: ",")) to:\(newTokensFromField.compactMap({$0.displayString}).joined(separator: ","))")
                     parent.tokens = newToken
                 } else {
                     self.parent.logger.debug("ignore unnecessary change")
@@ -148,3 +148,5 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
 
     public typealias NSViewType = NSTokenField
 }
+
+
