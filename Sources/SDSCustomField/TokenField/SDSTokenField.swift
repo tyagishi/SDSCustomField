@@ -50,7 +50,7 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
     }
 
     public func updateNSView(_ nsView: NSTokenField, context: Context) {
-        print("updateNSView called")
+        //print("updateNSView called")
         nsView.stringValue = self.tokens.map{ $0.displayString }.joined(separator: ",")
     }
     
