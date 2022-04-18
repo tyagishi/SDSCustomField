@@ -41,6 +41,9 @@ public struct OptionalDatePicker<DateLabel: View>: View {
                 title
             }
             .disabled(date==nil)
+            .onChange(of: localDate) { newValue in
+                date = localDate
+            }
 //            .labelsHidden()
 //            DatePicker(title, selection: $localDate, displayedComponents: pickerComponent)
         }

@@ -13,19 +13,22 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
     var tokenStyle: NSTokenField.TokenStyle
     var tokenizingCharacterSet: CharacterSet
 
+    let placeholder: String
     @Binding var tokens: [TokenObject]
     var completionDelay: TimeInterval
     let completionTokens:[TokenObject]
     var avoidDuplicate:Bool
     let acceptOnlyCompletion:Bool
     
-    public init(tokens: Binding<[TokenObject]>,
+    public init(placeholder: String,
+                tokens: Binding<[TokenObject]>,
                 completionTokens:[TokenObject] = [],
                 avoidDuplicate:Bool = false,
                 acceptOnlyCompletion:Bool = true,  // currently only true is supported
                 tokenStyle: NSTokenField.TokenStyle = .default,
                 tokenizingCharacterSet: CharacterSet = NSTokenField.defaultTokenizingCharacterSet,
                 completionDelay:TimeInterval = NSTokenField.defaultCompletionDelay ) {
+        self.placeholder = placeholder
         self._tokens = tokens
         self.completionTokens = completionTokens
         self.avoidDuplicate = avoidDuplicate
@@ -42,6 +45,7 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
         tokenField.completionDelay = self.completionDelay
         tokenField.delegate = context.coordinator
         tokenField.stringValue = self.tokens.map{ $0.displayString }.joined(separator: ",")
+        tokenField.placeholderString = placeholder
         return tokenField
     }
 
