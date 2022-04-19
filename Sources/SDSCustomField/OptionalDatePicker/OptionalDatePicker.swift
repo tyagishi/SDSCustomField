@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-public struct OptionalDatePicker<DateLabel: View>: View {
+public struct OptionalDatePicker<ToggleLabel: View>: View {
     @Environment(\.optionalDatePickerComponent) var pickerComponent
     @Binding var date: Date?
     @State var localDate: Date
-    let toggleTitle: String
-    let title: DateLabel
+    let toggleLabel: ToggleLabel
+    let dateTitle: String
 
-    public init(_ hiddenToggleTitle: String, _ dateTitle: (()-> DateLabel), date: Binding<Date?>) {
-        self.toggleTitle = hiddenToggleTitle
-        self.title = dateTitle()
+    public init(_ toggleLabel: (()-> ToggleLabel), _ hiddenDateTitle: String, date: Binding<Date?>) {
+        self.toggleLabel = toggleLabel()
+        self.dateTitle = hiddenDateTitle
         self._date = date
         if let date = date.wrappedValue {
             self._localDate = State(wrappedValue: date)
@@ -27,7 +27,7 @@ public struct OptionalDatePicker<DateLabel: View>: View {
     
     public var body: some View {
         HStack {
-            Toggle(toggleTitle, isOn: Binding<Bool>(get: {
+            Toggle(isOn: Binding<Bool>(get: {
                 !(date == nil)
             }, set: { newValue in
                 if newValue {
@@ -35,18 +35,19 @@ public struct OptionalDatePicker<DateLabel: View>: View {
                 } else {
                     date = nil
                 }
-            }))
-            .labelsHidden()
+            }), label: {
+                toggleLabel
+                    .opacity(date == nil ? 0.5 : 1.0)
+            })
             DatePicker(selection: $localDate, displayedComponents: pickerComponent) {
-                title
+                Text(dateTitle)
                     .opacity(date == nil ? 0.5 : 1.0)
             }
             .disabled(date==nil)
             .onChange(of: localDate) { newValue in
                 date = localDate
             }
-//            .labelsHidden()
-//            DatePicker(title, selection: $localDate, displayedComponents: pickerComponent)
+            .labelsHidden()
         }
 
     }
@@ -76,6 +77,6 @@ extension EnvironmentValues {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        OptionalDatePicker("ToggleTitle", {Text("PickerTitle")}, date: .constant(nil))
+        OptionalDatePicker({Text("ToggleTitle")}, "PickerTitle", date: .constant(nil))
     }
 }
