@@ -39,6 +39,7 @@ public struct OptionalDatePicker<DateLabel: View>: View {
             .labelsHidden()
             DatePicker(selection: $localDate, displayedComponents: pickerComponent) {
                 title
+                    .opacity(date == nil ? 0.5 : 1.0)
             }
             .disabled(date==nil)
             .onChange(of: localDate) { newValue in
