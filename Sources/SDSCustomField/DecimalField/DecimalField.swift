@@ -12,11 +12,13 @@ public struct DecimalField<T: StringProtocol>: View {
     @Binding var decimalValue: Decimal
     @StateObject var viewModel: DecimalFieldViewModel
     @FocusState private var fieldFocus:Bool
+    @State private var showButtons: Bool
 
-    public init(_ title: T, value: Binding<Decimal>) {
+    public init(_ title: T, value: Binding<Decimal>, showButtons: Bool = false) {
         self.title = title
         self._decimalValue = value
         self._viewModel = StateObject(wrappedValue: DecimalFieldViewModel(value.wrappedValue))
+        self._showButtons = State(wrappedValue: showButtons)
     }
     public var body: some View {
         HStack {
@@ -32,15 +34,17 @@ public struct DecimalField<T: StringProtocol>: View {
             .overlay(content: {
                 RoundedRectangle(cornerRadius: 3).fill(viewModel.fieldBackgroundColor.opacity(0.5))
             })
-            .textFieldStyle(.plain)
-            Button(action: {apply()}, label: {
-                Image(systemName: "arrow.turn.down.left")
-            })
-            .disabled(viewModel.fieldState != .acceptable)
-            Button(action: {cancelInput()}, label: {
-                Image(systemName: "arrow.counterclockwise")
-            })
-            .disabled(fieldFocus != true)
+            //.textFieldStyle(.plain)
+            if showButtons {
+                Button(action: {apply()}, label: {
+                    Image(systemName: "arrow.turn.down.left")
+                })
+                .disabled(viewModel.fieldState != .acceptable)
+                Button(action: {cancelInput()}, label: {
+                    Image(systemName: "arrow.counterclockwise")
+                })
+                .disabled(fieldFocus != true)
+            }
         }
         .onChange(of: decimalValue, perform: { newValue in
             viewModel.updateDecimalFromOutside(newValue)
