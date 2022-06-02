@@ -99,7 +99,10 @@ class DecimalFieldViewModel: ObservableObject {
         guard canAccept(fieldString) else { return false }
         // update fieldString format
         stringSharedWithUpperView = fieldString
-        decimalValue = Decimal(string: stringForDecimalConversion(fieldString))!
+        guard let decimalValue = Decimal(string: stringForDecimalConversion(fieldString)) else {
+            return false
+        }
+        self.decimalValue = decimalValue
 
         let nf = NumberFormatter()
         nf.numberStyle = .currency
