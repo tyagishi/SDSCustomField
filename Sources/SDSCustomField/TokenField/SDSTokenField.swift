@@ -8,6 +8,10 @@
 import os
 import SwiftUI
 
+#if os(macOS)
+import AppKit
+
+@available(macOS 12, *)
 public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRepresentable {
     var logger = Logger.init(subsystem: "com.smalldesksoftware.SDSTokenField", category: "SDSTokenField")
     var tokenStyle: NSTokenField.TokenStyle
@@ -153,5 +157,5 @@ public struct SDSTokenField<TokenObject:SDSTokenProtocol & Equatable>: NSViewRep
 
     public typealias NSViewType = NSTokenField
 }
-
+#endif
 
