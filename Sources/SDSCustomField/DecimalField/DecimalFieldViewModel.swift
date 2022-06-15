@@ -18,13 +18,16 @@ class DecimalFieldViewModel: ObservableObject {
     let acceptableValueBackground = Color.blue.opacity(0.4)
     let acceptedValueBackground = Color.clear// Color.white
 
+    @Published var forceApply = false
+    var anyCancellable: AnyCancellable? = nil
+
     enum FieldState {
         case invalid, acceptable, accepted
     }
     
     @Published var fieldState: FieldState = .accepted
 
-    init(_ initDecimal: Decimal) {
+    init(_ initDecimal: Decimal, willCloseNotification: Notification.Name? = nil) {
         let nf = NumberFormatter()
         nf.numberStyle = .currency
         let str = nf.string(from: initDecimal as NSDecimalNumber)!
@@ -34,6 +37,13 @@ class DecimalFieldViewModel: ObservableObject {
         self.fieldString = str
         self.fieldState = .accepted // because initially it is synced
         
+        if let willCloseNotification = willCloseNotification {
+            anyCancellable = NotificationCenter.default.publisher(for: willCloseNotification)
+                .sink(receiveValue: { willClose in
+                    guard self.canAccept(self.fieldString) else { self.cancel(); return } // reset input value in case we can NOT accept it
+                    self.forceApply = true
+                })
+        }
     }
 
     func updateFieldState() {

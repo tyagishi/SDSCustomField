@@ -14,10 +14,10 @@ public struct PercentField<T: StringProtocol>: View {
     @FocusState private var fieldFocus:Bool
     @State private var showButtons: Bool
 
-    public init(_ title: T, value: Binding<Decimal>, showButtons: Bool = false) {
+    public init(_ title: T, value: Binding<Decimal>, showButtons: Bool = false, willCloseNotification: Notification.Name? = nil) {
         self.title = title
         self._percentValue = value
-        self._viewModel = StateObject(wrappedValue: PercentFieldViewModel(value.wrappedValue))
+        self._viewModel = StateObject(wrappedValue: PercentFieldViewModel(value.wrappedValue, willCloseNotification: willCloseNotification))
         self._showButtons = State(wrappedValue: showButtons)
     }
     public var body: some View {
@@ -47,6 +47,12 @@ public struct PercentField<T: StringProtocol>: View {
         .onChange(of: percentValue, perform: { newValue in
             viewModel.updateDecimalFromOutside(newValue)
         })
+        .onChange(of: viewModel.forceApply) { newValue in
+            if newValue {
+                self.apply()
+                viewModel.forceApply = false
+            }
+        }
     }
     
     func apply() {

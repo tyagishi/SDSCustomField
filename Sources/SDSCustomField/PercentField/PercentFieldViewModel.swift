@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 class PercentFieldViewModel: ObservableObject {
     var stringSharedWithUpperView: String
@@ -16,6 +17,9 @@ class PercentFieldViewModel: ObservableObject {
     let invalidValueBackground = Color.red.opacity(0.4)
     let acceptableValueBackground = Color.blue.opacity(0.4)
     let acceptedValueBackground = Color.clear// Color.white
+
+    @Published var forceApply = false
+    var anyCancellable: AnyCancellable? = nil
 
     enum FieldState {
         case invalid, acceptable, accepted
@@ -31,13 +35,20 @@ class PercentFieldViewModel: ObservableObject {
     
     @Published var fieldState: FieldState = .accepted
 
-    init(_ initDecimal: Decimal) {
+    init(_ initDecimal: Decimal, willCloseNotification: Notification.Name? = nil) {
         let str = numberFormatter.string(from: initDecimal as NSDecimalNumber)!
         self.stringSharedWithUpperView = str
         self.decimalValue = initDecimal
         self.fieldString = str
         self.fieldState = .accepted // because initially it is synced
         
+        if let willCloseNotification = willCloseNotification {
+            anyCancellable = NotificationCenter.default.publisher(for: willCloseNotification)
+                .sink(receiveValue: { willClose in
+                    guard self.canAccept(self.fieldString) else { self.cancel(); return } // reset input value in case we can NOT accept it
+                    self.forceApply = true
+                })
+        }
     }
 
     func updateFieldState() {
