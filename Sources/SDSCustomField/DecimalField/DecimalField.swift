@@ -30,6 +30,9 @@ public struct DecimalField<T: StringProtocol>: View {
             .multilineTextAlignment(.trailing)
             .focused($fieldFocus)
             .onSubmit{ apply() }
+            .onChange(of: fieldFocus) { focus in
+                if !focus { apply() }
+            }
             //.background(viewModel.fieldBackgroundColor) // for using inside Table, use overlay instead of background
             .overlay(content: {
                 RoundedRectangle(cornerRadius: 3).fill(viewModel.fieldBackgroundColor.opacity(0.5))

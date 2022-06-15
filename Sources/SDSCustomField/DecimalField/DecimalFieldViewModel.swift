@@ -72,7 +72,12 @@ class DecimalFieldViewModel: ObservableObject {
     }
     
     public func updateFieldString(_ str: String) {
-        self.fieldString = str
+        if str != "" {
+            self.fieldString = str
+        } else {
+            self.fieldString = "0"
+        }
+        
         updateFieldState()
     }
     
