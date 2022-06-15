@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDSViewExtension
 
 public struct DecimalField<T: StringProtocol>: View {
     let title: T
@@ -13,12 +14,14 @@ public struct DecimalField<T: StringProtocol>: View {
     @StateObject var viewModel: DecimalFieldViewModel
     @FocusState private var fieldFocus:Bool
     @State private var showButtons: Bool
+    let willCloseNotificationName: Notification.Name?
 
     public init(_ title: T, value: Binding<Decimal>, showButtons: Bool = false, willCloseNotification: Notification.Name? = nil) {
         self.title = title
         self._decimalValue = value
-        self._viewModel = StateObject(wrappedValue: DecimalFieldViewModel(value.wrappedValue, willCloseNotification: willCloseNotification))
+        self._viewModel = StateObject(wrappedValue: DecimalFieldViewModel(value.wrappedValue))
         self._showButtons = State(wrappedValue: showButtons)
+        self.willCloseNotificationName = willCloseNotification
     }
     public var body: some View {
         HStack {
@@ -52,12 +55,9 @@ public struct DecimalField<T: StringProtocol>: View {
         .onChange(of: decimalValue, perform: { newValue in
             viewModel.updateDecimalFromOutside(newValue)
         })
-        .onChange(of: viewModel.forceApply) { newValue in
-            if newValue {
-                self.apply()
-                viewModel.forceApply = false
-            }
-        }
+        .optionalOnReceive(notificationName: willCloseNotificationName, action: { newValue in
+            self.apply()
+        })
     }
     
     func apply() {
@@ -77,3 +77,5 @@ struct DecimalField_Previews: PreviewProvider {
         DecimalField("example", value: .constant(Decimal(string: "10.0")!))
     }
 }
+
+

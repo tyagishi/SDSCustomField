@@ -13,12 +13,14 @@ public struct PercentField<T: StringProtocol>: View {
     @StateObject var viewModel: PercentFieldViewModel
     @FocusState private var fieldFocus:Bool
     @State private var showButtons: Bool
+    let willCloseNotificationName: Notification.Name?
 
     public init(_ title: T, value: Binding<Decimal>, showButtons: Bool = false, willCloseNotification: Notification.Name? = nil) {
         self.title = title
         self._percentValue = value
-        self._viewModel = StateObject(wrappedValue: PercentFieldViewModel(value.wrappedValue, willCloseNotification: willCloseNotification))
+        self._viewModel = StateObject(wrappedValue: PercentFieldViewModel(value.wrappedValue))
         self._showButtons = State(wrappedValue: showButtons)
+        self.willCloseNotificationName = willCloseNotification
     }
     public var body: some View {
         HStack {
@@ -33,6 +35,9 @@ public struct PercentField<T: StringProtocol>: View {
             .onChange(of: fieldFocus) { focus in
                 if !focus { apply() }
             }
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 3).fill(viewModel.fieldBackgroundColor.opacity(0.5))
+            })
             if showButtons {
                 Button(action: {apply()}, label: {
                     Image(systemName: "arrow.turn.down.left")
@@ -47,12 +52,9 @@ public struct PercentField<T: StringProtocol>: View {
         .onChange(of: percentValue, perform: { newValue in
             viewModel.updateDecimalFromOutside(newValue)
         })
-        .onChange(of: viewModel.forceApply) { newValue in
-            if newValue {
-                self.apply()
-                viewModel.forceApply = false
-            }
-        }
+        .optionalOnReceive(notificationName: willCloseNotificationName, action: { newValue in
+            self.apply()
+        })
     }
     
     func apply() {
