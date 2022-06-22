@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDSViewExtension
 
 public struct PercentField<T: StringProtocol>: View {
     let title: T
