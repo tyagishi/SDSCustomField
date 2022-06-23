@@ -29,7 +29,9 @@ public struct DecimalField<T: StringProtocol>: View {
                 viewModel.fieldString
             }, set: { newValue in
                 viewModel.updateFieldString(newValue)
-            }))
+            }), onEditingChanged: { focus in
+                if !focus { apply() }
+            })
             .multilineTextAlignment(.trailing)
             .focused($fieldFocus)
             .onSubmit{ apply() }
