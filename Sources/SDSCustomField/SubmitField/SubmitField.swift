@@ -74,6 +74,9 @@ public struct SubmitField: View {
             .optionalOnReceive(notificationName: notification) {_ in
                 text = fieldString
             }
+            .onChange(of: text) { newValue in
+                fieldString = newValue
+            }
     }
     
     var overlayAlignment: Alignment {
