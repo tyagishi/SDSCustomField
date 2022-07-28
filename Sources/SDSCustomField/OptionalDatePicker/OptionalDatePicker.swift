@@ -45,6 +45,8 @@ public struct OptionalDatePicker<ToggleLabel: View>: View {
             }
             .disabled(date==nil)
             .onChange(of: localDate) { newValue in
+                guard  Date.distantPast < newValue &&
+                        newValue < Date.distantFuture else { return }
                 date = localDate
             }
             .labelsHidden()
