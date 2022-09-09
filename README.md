@@ -17,3 +17,7 @@ Custom Field collection for SwiftUI
 - TokenField
    NSTokenField alternative
    
+
+## OnDemandTextEditor
+
+firstly it is (multi-line) Text. With tapping, it will become TextEditor
