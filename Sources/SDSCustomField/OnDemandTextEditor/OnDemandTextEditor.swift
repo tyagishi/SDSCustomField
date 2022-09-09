@@ -30,21 +30,22 @@ public struct OnDemandTextEditor: View {
             if textEditorMode {
                 ZStack {
                     TextEditor(text: $text)
+                    #if os(iOS)
                     Button(action: { textEditorMode.toggle() }, label: { Text("Done") })
                         .padding(10)
                         .background(RoundedRectangle(cornerRadius: 5).fill(Color.blue.opacity(0.2)))
                         .padding(5)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    #endif
                 }
                 .frame(maxHeight: .infinity)
             } else {
                 ScrollView {
                     Text(text)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            textEditorMode.toggle()
-                        }
+                }
+                .onTapGesture {
+                    textEditorMode.toggle()
                 }
             }
         }
