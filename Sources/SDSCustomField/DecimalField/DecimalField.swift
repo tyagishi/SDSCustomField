@@ -55,7 +55,7 @@ public struct DecimalField<T: StringProtocol>: View {
         .onChange(of: decimalValue, perform: { newValue in
             viewModel.updateDecimalFromOutside(newValue)
         })
-        .optionalOnReceive(notificationName: willCloseNotificationName, perform: { newValue in
+        .optionalOnReceive(notificationName: willCloseNotificationName, action: { newValue in
             self.apply()
         })
     }

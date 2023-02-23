@@ -21,12 +21,14 @@ public struct OnDemandTextEditor: View {
     
     public var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                Button(action: { textEditorMode.toggle() }, label: {
-                    Label(textEditorMode ? "done" : "edit", systemImage: "square.and.pencil")
-                })
-            }.show(showButtons)
+            if showButtons {
+                HStack {
+                    Spacer()
+                    Button(action: { textEditorMode.toggle() }, label: {
+                        Label(textEditorMode ? "done" : "edit", systemImage: "square.and.pencil")
+                    })
+                }
+            }
             if textEditorMode {
                 ZStack {
                     TextEditor(text: $text)
