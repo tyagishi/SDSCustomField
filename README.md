@@ -2,6 +2,47 @@
 
 Custom Field collection for SwiftUI
 
+- OptionalPicker
+  nil-capable Picker
+```
+import SwiftUI
+import SDSCustomField
+
+struct ContentView: View {
+    @State private var value: String? = nil
+    @State private var intValue: Int? = 3
+    var body: some View {
+        VStack {
+            OptionalPicker(selection: $value, noSelection: "-99",
+                           content: {
+                ForEach(1..<10, id: \.self) { num in
+                    Text(num.formatted())
+                        .tag(String("\(num)"))
+                }
+            }, nilContent: { Text("-") },
+                           label: { Text("String") })
+            Text("value: \(value ?? "nil")")
+
+            OptionalPicker(selection: $intValue, noSelection: -99,
+                           content: {
+                ForEach(1..<10, id: \.self) { num in
+                    Text(num.formatted())
+                        .tag(num)
+                }
+            }, label: { Text("Int") })
+            .pickerStyle(.segmented)
+            if let intValue = intValue {
+                Text("intValue: \(intValue)")
+            } else {
+                Text("intValue: nil")
+            }
+        }
+        .padding()
+    }
+}
+```
+
+
 - DecimalField
    TextField for handling Decimal and String
 
@@ -20,4 +61,4 @@ Custom Field collection for SwiftUI
 
 ## OnDemandTextEditor
 
-firstly it is (multi-line) Text. With tapping, it will become TextEditor
+at first it is (multi-line) Text. With tapping, it will become TextEditor
