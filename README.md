@@ -2,6 +2,10 @@
 
 Custom Field collection for SwiftUI
 
+## ClosedRangeField
+ClosedRangeField which user can specify ClosedRagen
+
+
 - OptionalPicker
   nil-capable Picker
 ```
