@@ -44,6 +44,10 @@ public struct ClosedRangeField<V: Comparable, F: ParseableFormatStyle>: View whe
                     self._range.wrappedValue = (self.range.lowerBound)...newValue
                 })
         }
+        .onChange(of: range, perform: { newRange in
+            lower = newRange.lowerBound
+            upper = newRange.upperBound
+        })
     }
 }
 
